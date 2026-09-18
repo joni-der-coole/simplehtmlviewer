@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Einfacher HTML Web Viewer</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        .editor-pane, .preview-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #ccc;
+        }
+        .preview-pane {
+            border-right: none;
+        }
+        .pane-header {
+            background-color: #e2e2e2;
+            padding: 8px 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #444;
+        }
+        textarea {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            resize: none;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            outline: none;
+            background-color: #1e1e1e;
+            color: #dcdcdc;
+        }
+        iframe {
+            flex: 1;
+            border: none;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <header>HTML Web Viewer</header>
+    
+    <div class="container">
+        <div class="editor-pane">
+            <div class="pane-header">HTML / CSS Code eingeben</div>
+            <textarea id="code-input" placeholder="Schreibe oder füge hier deinen HTML-Code ein...&lt;h1&gt;Hallo Welt&lt;/h1&gt;"><h1>Hallo Welt!</h1>
+<p>Dies ist eine Live-Vorschau.</p></textarea>
+        </div>
+        
+        <div class="preview-pane">
+            <div class="pane-header">Live-Vorschau</div>
+            <iframe id="preview-frame"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const codeInput = document.getElementById('code-input');
+        const previewFrame = document.getElementById('preview-frame');
+
+        function updatePreview() {
+            const code = codeInput.value;
+            const frameDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+            frameDoc.open();
+            frameDoc.write(code);
+            frameDoc.close();
+        }
+
+        // Initiale Vorschau laden
+        updatePreview();
+
+        // Bei jeder Änderung aktualisieren
+        codeInput.addEventListener('input', updatePreview);
+    </script>
+
+</body>
+</html>
