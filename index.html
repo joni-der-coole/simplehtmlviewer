@@ -3,56 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Erweiterter HTML Web Viewer</title>
-    
-    <!-- 1. Das offizielle Google reCAPTCHA Skript laden -->
-    <script src="https://google.com" async defer></script>
-
+    <title>Einfacher HTML Web Viewer</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        
-        /* Sperrbildschirm-Design für reCAPTCHA */
-        #sperrBildschirm {
+        body {
+            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
             height: 100vh;
             background-color: #f4f4f9;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
         }
-        #sperrBox {
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        #sperrBox h2 { margin-bottom: 10px; color: #333; }
-        #sperrBox p { margin-bottom: 25px; color: #666; }
-
-        /* Der eigentliche Web Viewer (Am Anfang unsichtbar) */
-        #hauptInhalt {
-            display: none; /* Wird erst nach reCAPTCHA sichtbar */
-            flex-direction: column;
-            height: 100vh;
-            background-color: #f4f4f9;
-            font-family: Arial, sans-serif;
-        }
-        
         header {
             background-color: #333;
             color: #fff;
             padding: 10px 20px;
             font-size: 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         .container {
             display: flex;
@@ -95,64 +64,39 @@
 </head>
 <body>
 
-    <!-- SPERR-BOX: Das sieht der Besucher als allererstes -->
-    <div id="sperrBildschirm">
-        <div id="sperrBox">
-            <h2>Sicherheitsprüfung</h2>
-            <p>Bitte bestätigen Sie, dass Sie kein Bot sind:</p>
-            
-            <!-- 2. Die reCAPTCHA Checkbox -->
-            <!-- WICHTIG: Ersetze 'HIER_DEIN_WEBSITE_SCHLÜSSEL' mit deinem echten Schlüssel aus der Google Admin Console -->
-            <div class="g-recaptcha" data-sitekey="6LfIDc8tAAAAAJ5mbbi_Pi26hNi5qPElXwQyumRJ" data-callback="entsperreWebsite"></div>
+    <header>HTML Web Viewer</header>
+    
+    <div class="container">
+        <div class="editor-pane">
+            <div class="pane-header">HTML / CSS Code eingeben</div>
+            <textarea id="code-input" placeholder="Schreibe oder füge hier deinen HTML-Code ein...&lt;h1&gt;Hallo Welt&lt;/h1&gt;"><h1>Hallo Welt!</h1>
+<p>Dies ist eine Live-Vorschau.</p></textarea>
         </div>
-    </div>
-
-    <!-- DEIN ECHTER WEB VIEWER: Wird erst nach erfolgreichem Klick geladen -->
-    <div id="hauptInhalt">
-        <header>
-            <span>HTML Web Viewer</span>
-        </header>
-
-        <div class="container">
-            <div class="editor-pane">
-                <div class="pane-header">HTML / CSS / JS Code eingeben</div>
-                <textarea id="code-input" placeholder="Schreibe hier deinen HTML-Code..."><h1>Hallo Welt!</h1>
-<p>Dies ist eine isolierte Live-Vorschau.</p>
-<script>
-    console.log("Skripte laufen ebenfalls innerhalb der Sandbox.");
-</script></textarea>
-            </div>
-            <div class="preview-pane">
-                <div class="pane-header">Live-Vorschau (Isoliert)</div>
-                <iframe id="preview-frame" sandbox="allow-scripts"></iframe>
-            </div>
+        
+        <div class="preview-pane">
+            <div class="pane-header">Live-Vorschau</div>
+            <iframe id="preview-frame"></iframe>
         </div>
     </div>
 
     <script>
-        // Funktion 1: reCAPTCHA entsperrt die Seite
-        function entsperreWebsite(token) {
-            if (token.length > 0) {
-                // Versteckt den Sperrbildschirm
-                document.getElementById("sperrBildschirm").style.display = "none";
-                // Zeigt deinen Web Viewer im Flex-Design an
-                document.getElementById("hauptInhalt").style.display = "flex";
-                // Startet die Vorschau
-                updatePreview();
-            }
-        }
-
-        // Funktion 2: Dein originaler Web Viewer Code
         const codeInput = document.getElementById('code-input');
         const previewFrame = document.getElementById('preview-frame');
 
         function updatePreview() {
             const code = codeInput.value;
-            previewFrame.srcdoc = code;
+            const frameDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+            frameDoc.open();
+            frameDoc.write(code);
+            frameDoc.close();
         }
+
+        // Initiale Vorschau laden
+        updatePreview();
 
         // Bei jeder Änderung aktualisieren
         codeInput.addEventListener('input', updatePreview);
     </script>
+
 </body>
 </html>
